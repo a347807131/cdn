@@ -40,7 +40,7 @@ public class SimpleConnectionPool {
 }
 ```
 
-##标准数据源
+##标准数据源(基于动态代理)
 ```java
 //标准的数据源
 public class MyDataSource implements DataSource {
@@ -107,3 +107,4 @@ public class MyDataSource implements DataSource {
 
 }
 ```
+代理数据源

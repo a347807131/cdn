@@ -1,0 +1,1 @@
+#线程局部变量##作用> 用于存放与当前线程相关的变量##实现```javapublic class ThreadLocal{    private Map<Runable,Object> map=new HashMap<>();        public void set(Object obj){        map.put(Thread.currentThread(),obj);    }     public void remove();    public Object get();  }```> 由源码可知ThreadLocal就是存放与线程相关的变量，本质上就是一个容器。
