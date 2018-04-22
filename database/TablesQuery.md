@@ -75,6 +75,12 @@ select product,sum(price) as total from order
 having total>100
 ```
 
+##分页查询
+
+```sql
+select * from t limit (offset,nums)
+```
+
 
 
 
