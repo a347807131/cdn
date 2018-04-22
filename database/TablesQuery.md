@@ -80,7 +80,9 @@ having total>100
 ```sql
 select * from t limit (offset,nums)
 ```
+##数据库数据类型与JDBC数据类型对照表
 
+![table](https://raw.githubusercontent.com/a347807131/ms/master/database/常用数据类型装换对照表.png)
 
 
 
