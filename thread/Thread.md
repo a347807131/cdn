@@ -1,6 +1,6 @@
 #Thread类源码解读
 
-标签: 线程 调度 锁 volatile 进程
+标签: `线程` `调度` `锁` `volatile` `进程`
 ----
 
 ##简介
@@ -29,6 +29,7 @@
 <br>
 
 ###volatile保证了可见性，不保证原子性
+
 比如下列代码就时而成功，时而失败。
 ```java
 public class ThreadTest {
@@ -149,8 +150,6 @@ public class ThreadTest {
         Runnable
  *///:~
 ```
-
-
 
 ##线程相关比较重要的方法
 
