@@ -179,7 +179,7 @@ public class ThreadTest {
 
 ###yield()
 
-    调用 yield()方法会让当前线程交出CPU资源，让CPU去执行其他的线程。但是，yield()不能控制具体的交出CPU的时间。
+> 调用 yield()方法会让当前线程交出CPU资源，让CPU去执行其他的线程。但是，yield()不能控制具体的交出CPU的时间。
 
 注意:
   - yield()方法只能让 拥有**相同优先级**的线程 有获取 CPU 执行时间的机会。
