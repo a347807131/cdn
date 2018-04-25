@@ -1,21 +1,21 @@
-#Thread类源码解读
+# Thread类源码解读
 
 标签: `线程` `调度` `锁` `volatile` `进程`
 ----
 
-##简介
+## 简介
 
     Thread类是Java并发编程的基础，是对多线程编程的实现，底层大量使用了native调用C/C++实现的API，是jdk中也非常基础也非常重要的类。
 
-##类图
+## 类图
 
 ![Thread.png](https://raw.githubusercontent.com/a347807131/ms/master/thread/Thread.png)
 
 ---
 
-##volatile关键字
+## volatile关键字
 
-###作用
+### 作用
     Java 语言中的 volatile 变量可以被看作是一种 “程度较轻的 synchronized”；与 synchronized 块相比，volatile 变量所需的编码较少，并且运行时开销也较少，但是它所能实现的功能也仅是 synchronized 的一部分。
     
     一旦一个共享变量（类的成员变量、类的静态成员变量）被volatile修饰之后，那么就具备了两层语义：
@@ -28,7 +28,7 @@
 
 <br>
 
-###volatile保证了可见性，不保证原子性
+### volatile保证了可见性，不保证原子性
 
 比如下列代码就时而成功，时而失败。
 ```java
@@ -54,13 +54,13 @@ public class ThreadTest {
     解释：当线程读取inc的值后修改之前，cpu调度到其它线程，但是线程1没有进行修改，所以其他线程根本就不会看到修改的值。    
 <br>
 
-###使用volatile关键字需要具备的条件
+### 使用volatile关键字需要具备的条件
 
 - 1.对变量的写操作不依赖当前值
 - 2.该变量没有包含在具有其他变量的不变式中
 <br>
 
-##成员变量
+## 成员变量
 
 |类型     |   变量名      | 说明 |
 |----    |   ---------: |-----: |
@@ -103,13 +103,13 @@ public class ThreadTest {
 |int|threadLocalRandomProbe||
 |int|threadLocalRandomSecondarySeed||
 
-##线程的生命周期
+## 线程的生命周期
 
     在Java虚拟机 中，线程从最初的创建到最终的消亡，要经历若干个状态：创建(new)、就绪(runnable/start)、运行(running)、阻塞(blocked)、等待(waiting)、时间等待(time waiting) 和 消亡(dead/terminated)。
     在给定的时间点上，一个线程只能处于一种状态，各状态的含义如下图所示：
    ![生命周期](https://raw.githubusercontent.com/a347807131/ms/master/thread/threadstate.jpg)
    
-###解释：
+### 解释：
 
 - 创建:程创建之后，不会立即进入就绪状态，因为线程的运行需要一些条件（比如程序计数器、Java栈、本地方法栈等）。
 - 就绪:只有线程运行需要的所有条件满足了，才进入就绪状态。不代表立刻就能获取CPU执行时间，也许此时CPU正在执行其他的事情，因此它要等待。
@@ -117,7 +117,7 @@ public class ThreadTest {
 - 消亡:当由于突然中断或者子任务执行完毕，线程就会被消亡。
 <br>
 
-##创建线程的方法
+## 创建线程的方法
 
 ```java
 public class ThreadTest {
@@ -151,15 +151,15 @@ public class ThreadTest {
  *///:~
 ```
 
-##线程相关比较重要的方法
+## 线程相关比较重要的方法
 
-###start()
+### start()
 
     创建好自己的线程类之后，就可以创建线程对象了，然后通过start()方法去启动线程。
     通过start()方法启动一个线程之后，若线程获得了CPU执行时间，便进入run()方法体去执行具体的任务。如果用户直接调用run()方法，即相当于在主线程中执行run()方法，跟普通的方法调用没有任何区别，此时并不会创建一个新的线程来执行定义的任务。  
     实际上，start()方法的作用是通知 “线程规划器” 该线程已经准备就绪，以便让系统安排一个时间来调用其 run()方法，也就是使线程得到运行。
 
-###run()
+### run()
 
     自定义的执行方法实体，在线程执行该线程时，会执行该方法体中的内容
 
@@ -168,7 +168,7 @@ public class ThreadTest {
   - 间接重写：通过Thread构造函数传入Runnable对象 (注意，实际上重写的是 Runnable对象 的run() 方法)。
     
 
-###sleep()
+### sleep()
 
     作用是在指定的毫秒数内让当前正在执行的线程（即 currentThread() 方法所返回的线程）睡眠，并交出 CPU 让其去执行其他的任务。
     调用sleep方法相当于让线程进入阻塞状态。
@@ -177,9 +177,16 @@ public class ThreadTest {
   - 如果调用了sleep方法，必须捕获InterruptedException异常或者将该异常向上层抛出；
   - sleep方法不会释放锁，也就是说如果当前线程持有对某个对象的锁，则即使调用sleep方法，其他线程也无法访问这个对象。
 
-###yield()
+### yield()
 
 > 调用 yield()方法会让当前线程交出CPU资源，让CPU去执行其他的线程。但是，yield()不能控制具体的交出CPU的时间。
+
+### 源码注释中比较重要的几点
+
+- Yield是一个静态的原生(native)方法。
+- Yield告诉当前正在执行的线程把运行机会交给线程池中拥有相同优先级的线程。
+- Yield不能保证使得当前正在运行的线程迅速转换到可运行的状态。
+- 仅能使一个线程从运行状态转到可运行状态，而不是等待或阻塞状态.
 
 注意:
   - yield()方法只能让 拥有**相同优先级**的线程 有获取 CPU 执行时间的机会。
@@ -205,11 +212,11 @@ public class YieldTest{
 }  
 ```
 
-###join()
+### join()
 
     由于 join方法 会调用 wait方法 让宿主线程进入阻塞状态，并且会释放线程占有的锁，并交出CPU执行权限。
     
-###interrupt()
+### interrupt()
 
     单独调用interrupt方法可以使得 处于阻塞状态的线程 抛出一个异常，也就是说，它可以用来中断一个正处于阻塞状态的线程；另外，通过 interrupted()方法 和 isInterrupted()方法 可以停止正在运行的线程。
     
@@ -217,7 +224,7 @@ public class YieldTest{
     
 ###
 
-##死锁的出现
+## 死锁的出现
 
     在使用 suspend 和 resume 方法时，如果使用不当，极易造成公共的同步对象的独占，使得其他线程无法得到公共同步对象锁，从而造成死锁。
 示例:
@@ -248,17 +255,17 @@ public class MyThread extends Thread {
 }
 ```
 
-##线程优先级
+## 线程优先级
 
     优先级代表cpu调度时获得cpu时间的几率大小，线程的优先级具有一定的规则性，也就是CPU尽量将执行资源让给优先级比较高的线程。特别地，高优先级的线程总是大部分先执行完，但并不一定所有的高优先级线程都能先执行完。
     在 Java 中，线程的优先级具有继承性，比如 A 线程启动 B 线程， 那么 B 线程的优先级与 A 是一样的。
 
-##守护进程
+## 守护进程
 
     在 Java 中，线程可以分为两种类型，即用户线程和守护线程。
     任何一个守护线程都是整个JVM中所有非守护线程的保姆，只要当前JVM实例中存在任何一个非守护线程没有结束，守护线程就在工作；只有当最后一个非守护线程结束时，守护线程才随着JVM一同结束工作。 
 
-##相关参考资料
+## 相关参考资料
 
 - volatile https://www.cnblogs.com/dolphin0520/p/3920373.html
 - thread https://blog.csdn.net/justloveyou_/article/details/54347954
